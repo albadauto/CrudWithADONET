@@ -1,10 +1,15 @@
-﻿namespace CrudWithADONET.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CrudWithADONET.Models
 {
     public class UserModel
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
-        public int Age { get; set; }    
+        [Required]
+        public int Age { get; set; }
+        [Required]
         public string Email { get; set; }
     }
 }

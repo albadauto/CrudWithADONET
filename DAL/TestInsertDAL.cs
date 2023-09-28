@@ -1,4 +1,5 @@
 ﻿using CrudWithADONET.DAL.Interface;
+using CrudWithADONET.DAO;
 using CrudWithADONET.Models;
 using System.Data.SqlClient;
 
@@ -14,9 +15,9 @@ namespace CrudWithADONET.DAL
         {
             _configuration = configuration;
         }
-        public bool InsertUser(UserModel model)
+        public bool InsertUser(UserDAO model)
         {
-            using(_connection = new SqlConnection(_configuration.GetConnectionString("Database")))
+            using (_connection = new SqlConnection(_configuration.GetConnectionString("Database")))
             {
                 _command = _connection.CreateCommand();
                 _command.CommandType = System.Data.CommandType.StoredProcedure;
@@ -30,6 +31,33 @@ namespace CrudWithADONET.DAL
             }
 
             return true;
+        }
+
+        public UserDAO GetAllUser(int id)
+        {
+            using (_connection = new SqlConnection(_configuration.GetConnectionString("Database")))
+            {
+                _command = _connection.CreateCommand();
+                _command.CommandType = System.Data.CommandType.StoredProcedure;
+                _command.CommandText = "AA_SP_BUSCAUSUARIO";
+                _command.Parameters.AddWithValue("@ID", id);
+                _connection.Open();
+                var reader = _command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new UserDAO()
+                    {
+                        Name = reader.GetString(1),
+                        Age = reader.GetInt32(3),
+                        Email = reader.GetString(2)
+
+                    };
+                }
+                _connection.Close();
+                return new UserDAO();
+
+
+            }
         }
     }
 }

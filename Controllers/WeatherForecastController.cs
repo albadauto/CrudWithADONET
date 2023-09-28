@@ -1,5 +1,6 @@
 using CrudWithADONET.DAL;
 using CrudWithADONET.DAL.Interface;
+using CrudWithADONET.DAO;
 using CrudWithADONET.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,10 +36,25 @@ namespace CrudWithADONET.Controllers
         }
 
         [HttpPost("/InsertUser")]
-        public ActionResult InsertTest([FromBody] UserModel model)
+        public ActionResult InsertTest([FromBody] UserDAO model)
         {
-            _dal.InsertUser(model);
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                _dal.InsertUser(model);
+                return Ok();
+            }
+            else
+            {
+                var errors = ModelState.Select(x => x.Value.Errors);
+                return BadRequest(errors);
+            }
+        }
+
+        [HttpGet("/GetUser/{id}")]
+        public ActionResult GetUser(int id)
+        {
+            UserDAO result = _dal.GetAllUser(id);
+            return Ok(new { result });
         }
     }
 }
